@@ -22,10 +22,10 @@ public class MapParser {
             //Read header
             int header = mapAccess.readInt();
             if (header == 256) {
-                System.out.println("LBP1/2 Map File");
+                System.out.println("Detected: LBP1/2 Map File");
             }
             if (header == 21496064) {
-                System.out.println("LBP3 Map File");
+                System.out.println("Detected: LBP3 Map File");
             }
             if (header != 256 && header != 21496064) {
                 throw new IOException("Error reading 4 bytes - not a valid .map file");
@@ -35,7 +35,7 @@ public class MapParser {
 
             //Read map entry count
             int mapEntries = mapAccess.readInt();
-            System.out.println(mapEntries + "entries in file");
+            System.out.println(mapEntries + " entries in file");
             seek += 4;
             mapAccess.seek(seek); //ok, were done!
 
@@ -97,7 +97,7 @@ public class MapParser {
             long end = System.currentTimeMillis();
             long timeTook = end - begin;
 
-            System.out.println("Map parsed in " + timeTook + "ms");
+            System.out.println("Map parsed in " + (timeTook / 1000) + " seconds (" + timeTook + "ms)");
             //self.printHtml(System.out);
         } catch (IOException e) {
             System.out.println("IOException:");
