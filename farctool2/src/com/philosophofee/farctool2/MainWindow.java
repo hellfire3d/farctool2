@@ -1,11 +1,15 @@
 package com.philosophofee.farctool2;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.util.Date;
+import java.util.Formatter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,9 +20,13 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
+import org.riversun.bigdoc.bin.BigFileSearcher;
 
 public class MainWindow extends javax.swing.JFrame {
     public File bigBoy = null;
+    public File bigBoyFarc = null;
+    public String currSHA1 = null;
+    public String currFileName = null;
     
     public MainWindow() {
         initComponents();
@@ -48,6 +56,7 @@ public class MainWindow extends javax.swing.JFrame {
 
                 if (finalString.contains(".")){
                     System.out.println("You currently have selected " + finalString);
+                    currFileName = finalString;
                     EditorPanel.setValueAt(finalString, 0, 1);
                     KMPMatch matcher = new KMPMatch();
 
@@ -91,6 +100,7 @@ public class MainWindow extends javax.swing.JFrame {
                             mapAccess.seek(offset);
                         }
                         EditorPanel.setValueAt(fileHash, 3, 2); //set hex hash
+                        currSHA1 = fileHash;
                         EditorPanel.setValueAt(fileHash, 3, 1); //set readable hash (redundant)
                         
                         //Get size
@@ -125,6 +135,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         fileChooser = new javax.swing.JFileChooser();
         jFrame1 = new javax.swing.JFrame();
+        PopUpMessage = new javax.swing.JOptionPane();
         jSplitPane1 = new javax.swing.JSplitPane();
         MapPanel = new javax.swing.JScrollPane();
         mapTree = new javax.swing.JTree();
@@ -132,6 +143,7 @@ public class MainWindow extends javax.swing.JFrame {
         ToolsPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         EditorPanel = new javax.swing.JTable();
+        ExtractButton = new javax.swing.JButton();
         pnlOutput = new javax.swing.JPanel();
         mapLoadingBar = new javax.swing.JProgressBar();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -139,6 +151,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
+        OpenFarc = new javax.swing.JMenuItem();
         Exit = new javax.swing.JMenuItem();
         ToolsMenu = new javax.swing.JMenu();
         DecompressorMenuButton = new javax.swing.JMenuItem();
@@ -197,6 +210,13 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(EditorPanel);
 
+        ExtractButton.setText("Extract");
+        ExtractButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExtractButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ToolsPanelLayout = new javax.swing.GroupLayout(ToolsPanel);
         ToolsPanel.setLayout(ToolsPanelLayout);
         ToolsPanelLayout.setHorizontalGroup(
@@ -204,10 +224,18 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(ToolsPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane1)
                 .addGap(3, 3, 3))
+            .addGroup(ToolsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ExtractButton)
+                .addContainerGap(335, Short.MAX_VALUE))
         );
         ToolsPanelLayout.setVerticalGroup(
             ToolsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+            .addGroup(ToolsPanelLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ExtractButton)
+                .addGap(0, 59, Short.MAX_VALUE))
         );
 
         RightHandStuff.setTopComponent(ToolsPanel);
@@ -248,6 +276,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         FileMenu.add(Open);
+
+        OpenFarc.setText("Open .farc...");
+        OpenFarc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenFarcActionPerformed(evt);
+            }
+        });
+        FileMenu.add(OpenFarc);
 
         Exit.setText("Exit");
         Exit.addActionListener(new java.awt.event.ActionListener() {
@@ -295,6 +331,10 @@ public class MainWindow extends javax.swing.JFrame {
     
     
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
+        System.out.println("A haiku for the impatient:\n"
+                + "Map parsing takes time.\n"
+                + "I might freeze, I have not crashed.\n"
+                + "Wait, please bear with me!");
         FileFilter ff = new FileFilter(){
             public boolean accept(File f){
                 if(f.isDirectory()) return true;
@@ -323,7 +363,7 @@ public class MainWindow extends javax.swing.JFrame {
             //self.loadMap(file);
             //self.printHtml(System.out);
         } else {
-            System.out.println("File access cancelled by user.");
+            System.out.println("...nevermind, you cancelled!");
         }
     }//GEN-LAST:event_OpenActionPerformed
 
@@ -371,6 +411,134 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_DecompressorMenuButtonActionPerformed
 
+    private void ExtractButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExtractButtonActionPerformed
+        System.out.println("Attempting to extract " + currSHA1 + "..." );
+        if (bigBoyFarc == null) {showUserDialog("Warning","FARC not loaded or mismatch"); System.out.println("failed."); return; }
+        
+        int fileCount = 0;
+        long tableOffset = 0;
+        try {
+            RandomAccessFile farcAccess = new RandomAccessFile(bigBoyFarc, "rw"); 
+            farcAccess.seek(bigBoyFarc.length() - 8);
+            fileCount = farcAccess.readInt();
+            tableOffset = (bigBoyFarc.length() - 8 - (fileCount * 28));
+
+            //System.out.println("file count in farc: " + fileCount);
+            //System.out.println("file table offset: " + tableOffset);
+            
+            farcAccess.close();
+        } catch (IOException ex) {}
+        
+        BigFileSearcher searcher = new BigFileSearcher();
+        
+        long fileTableOffset = searcher.indexOf(bigBoyFarc, hexStringToByteArray(currSHA1), tableOffset);
+        if (fileTableOffset==-1 ) { System.out.println("This file isn't in the farc, dummy!"); return; }
+        System.out.println("entry position in table: " + fileTableOffset); 
+        
+        //Let's do some extraction
+        int newFileSize = 0;
+        int newFileOffset = 0;
+        byte[] newSHA1 = new byte[20];
+        try {;
+            RandomAccessFile farcAccess = new RandomAccessFile(bigBoyFarc, "rw"); 
+            
+            //go to the file table, and grab the hash for verification later
+            farcAccess.seek(fileTableOffset);
+            farcAccess.readFully(newSHA1);
+            System.out.println("entry SHA1 in farc: " + byteArrayToHexString(newSHA1));
+            
+            //seek past the sha1 and grab the offset to know where to extract the file
+            farcAccess.seek(fileTableOffset + 20);
+            newFileOffset = farcAccess.readInt();
+            System.out.println("entry offset: " + newFileOffset );
+            
+            //get file size so we can know how much data to pull later
+            farcAccess.seek(fileTableOffset + 24);
+            newFileSize = farcAccess.readInt();
+            System.out.println("entry size: " + newFileSize );
+            
+            //get name of output file
+            String outputFileName = currFileName.substring(currFileName.lastIndexOf("/") + 1);
+            File outputFile = new File(outputFileName);
+            
+            fileChooser.setFileFilter(null);
+            fileChooser.setSelectedFile(outputFile);
+            int returnVal = fileChooser.showSaveDialog(this);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                outputFile = fileChooser.getSelectedFile();
+                System.out.println("Gonna try extracting now!");
+                long begin = System.currentTimeMillis();
+                FileInputStream fin = new FileInputStream(bigBoyFarc);
+                fin.skip(newFileOffset);
+                byte[] outputbytes = new byte[newFileSize];
+                int output=0;
+                output = fin.read(outputbytes);
+                
+                FileOutputStream fos = new FileOutputStream(outputFile);
+                fos.write(outputbytes);
+                fos.close();
+                fin.close();
+                long end = System.currentTimeMillis();
+                long timeTook = end - begin;
+
+                System.out.println("Done in " + (timeTook / 1000) + " seconds (" + timeTook + "ms). ");
+
+            } else {
+            System.out.println("File access cancelled by user.");
+            }
+            farcAccess.close();
+        } catch (IOException ex) {}
+        
+    }//GEN-LAST:event_ExtractButtonActionPerformed
+
+    private void OpenFarcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFarcActionPerformed
+        if (bigBoy == null) {showUserDialog("Warning","Please keep in mind opening a .farc file alone will not display anything within farctool2. A .map file is required for any file functionality.");}
+        FileFilter ff = new FileFilter(){
+            public boolean accept(File f){
+                if(f.isDirectory()) return true;
+                else if(f.getName().endsWith(".farc")) return true;
+                    else return false;
+            }
+            public String getDescription(){
+                return "FARC Files";
+            }
+        };
+        fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+        fileChooser.setFileFilter(ff);
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            bigBoyFarc = fileChooser.getSelectedFile();
+            System.out.println("Sucessfully opened " + bigBoyFarc.getName());
+        }
+    }//GEN-LAST:event_OpenFarcActionPerformed
+
+    private void showUserDialog(String title, String message) {
+        if (title=="Warning") {
+            PopUpMessage.showMessageDialog(PopUpMessage, message, title, PopUpMessage.WARNING_MESSAGE);
+        }
+        else {
+            PopUpMessage.showMessageDialog(PopUpMessage, message, title, PopUpMessage.PLAIN_MESSAGE);    
+        }
+    }
+    
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                                 + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
+    public static String byteArrayToHexString(byte[] bytes) {
+        Formatter formatter = new Formatter();
+        for (byte b : bytes) {
+            formatter.format("%02x", b);
+        }
+        return formatter.toString();
+    }
+    
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -407,10 +575,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem DecompressorMenuButton;
     private javax.swing.JTable EditorPanel;
     private javax.swing.JMenuItem Exit;
+    private javax.swing.JButton ExtractButton;
     private javax.swing.JMenu FileMenu;
     private javax.swing.JScrollPane MapPanel;
     private javax.swing.JMenuItem Open;
+    private javax.swing.JMenuItem OpenFarc;
     private javax.swing.JTextArea OutputTextArea;
+    private javax.swing.JOptionPane PopUpMessage;
     private javax.swing.JSplitPane RightHandStuff;
     private javax.swing.JMenu ToolsMenu;
     private javax.swing.JPanel ToolsPanel;
