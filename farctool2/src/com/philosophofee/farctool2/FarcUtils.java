@@ -1,7 +1,5 @@
 package com.philosophofee.farctool2;
 
-import static com.philosophofee.farctool2.MainWindow.byteArrayToHexString;
-import static com.philosophofee.farctool2.MainWindow.hexStringToByteArray;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,7 +30,7 @@ public class FarcUtils {
 
         //Go to offset where SHA1's start
         BigFileSearcher searcher = new BigFileSearcher();
-        long fileTableOffset = searcher.indexOf(bigBoyFarc, hexStringToByteArray(currSHA1), tableOffset);
+        long fileTableOffset = searcher.indexOf(bigBoyFarc, MiscUtils.hexStringToByteArray(currSHA1), tableOffset);
         if (fileTableOffset == -1) {
             System.out.println("This SHA1 isn't in the farc, dummy!");
             return null;
@@ -49,7 +47,7 @@ public class FarcUtils {
             //go to the file table, and grab the hash for verification later
             farcAccess.seek(fileTableOffset);
             farcAccess.readFully(newSHA1);
-            System.out.println("entry SHA1 in farc: " + byteArrayToHexString(newSHA1));
+            System.out.println("entry SHA1 in farc: " + MiscUtils.byteArrayToHexString(newSHA1));
 
             //seek past the sha1 and grab the offset to know where to extract the file
             farcAccess.seek(fileTableOffset + 20);

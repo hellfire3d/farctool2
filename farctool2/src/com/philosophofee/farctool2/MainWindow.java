@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
@@ -33,6 +35,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     public MainWindow() {
         initComponents();
+        
+        
         setIconImage(new ImageIcon(getClass().getResource("resources/farctool2_icon.png")).getImage());
         mapTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         mapTree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -104,6 +108,7 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                         EditorPanel.setValueAt(fileHash, 3, 2); //set hex hash
                         currSHA1 = fileHash;
+                        ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
                         EditorPanel.setValueAt(fileHash, 3, 1); //set readable hash (redundant)
 
                         //Get size
@@ -120,7 +125,13 @@ public class MainWindow extends javax.swing.JFrame {
 
                     } catch (IOException ex) {
                     }
-
+                    try {
+                        if (finalString.contains(".tex")) { 
+                            PreviewLabel.setIcon(MiscUtils.createDDSIcon("temp_prev_tex"));
+                            System.out.println("it's a tex, homie");
+                        } //pump that shit homie
+                        } catch (IOException ex) {
+                    }
                 } else {
                     //System.out.println("You currently have selected " + finalString + "/. This is a folder!");
                 }
@@ -148,7 +159,10 @@ public class MainWindow extends javax.swing.JFrame {
         OutputTextArea = new javax.swing.JTextArea();
         jSplitPane2 = new javax.swing.JSplitPane();
         ToolsPanel = new javax.swing.JPanel();
-        TestButton1 = new javax.swing.JButton();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        PreviewPanel = new javax.swing.JPanel();
+        PreviewLabel = new javax.swing.JLabel();
+        ToolsPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         EditorPanel = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -158,6 +172,7 @@ public class MainWindow extends javax.swing.JFrame {
         Exit = new javax.swing.JMenuItem();
         ToolsMenu = new javax.swing.JMenu();
         ExtractMenuButton = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         DecompressorMenuButton = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
 
@@ -174,6 +189,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("farctool2");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jSplitPane1.setDividerLocation(120);
 
@@ -182,7 +202,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(MapPanel);
 
-        RightHandStuff.setDividerLocation(300);
+        RightHandStuff.setDividerLocation(301);
         RightHandStuff.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         OutputTextArea.setEditable(false);
@@ -202,7 +222,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlOutputLayout.setVerticalGroup(
             pnlOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOutputLayout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mapLoadingBar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -212,28 +232,46 @@ public class MainWindow extends javax.swing.JFrame {
         jSplitPane2.setDividerLocation(140);
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        TestButton1.setText("test button :)");
-        TestButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TestButton1ActionPerformed(evt);
-            }
-        });
+        jSplitPane3.setDividerLocation(100);
+
+        PreviewLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        PreviewLabel.setAlignmentX(0.5F);
+
+        javax.swing.GroupLayout PreviewPanelLayout = new javax.swing.GroupLayout(PreviewPanel);
+        PreviewPanel.setLayout(PreviewPanelLayout);
+        PreviewPanelLayout.setHorizontalGroup(
+            PreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(PreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+        );
+        PreviewPanelLayout.setVerticalGroup(
+            PreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(PreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+        );
+
+        jSplitPane3.setRightComponent(PreviewPanel);
+
+        javax.swing.GroupLayout ToolsPanel2Layout = new javax.swing.GroupLayout(ToolsPanel2);
+        ToolsPanel2.setLayout(ToolsPanel2Layout);
+        ToolsPanel2Layout.setHorizontalGroup(
+            ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        ToolsPanel2Layout.setVerticalGroup(
+            ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 137, Short.MAX_VALUE)
+        );
+
+        jSplitPane3.setLeftComponent(ToolsPanel2);
 
         javax.swing.GroupLayout ToolsPanelLayout = new javax.swing.GroupLayout(ToolsPanel);
         ToolsPanel.setLayout(ToolsPanelLayout);
         ToolsPanelLayout.setHorizontalGroup(
             ToolsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ToolsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(TestButton1)
-                .addContainerGap(302, Short.MAX_VALUE))
+            .addComponent(jSplitPane3)
         );
         ToolsPanelLayout.setVerticalGroup(
             ToolsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ToolsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(TestButton1)
-                .addContainerGap(105, Short.MAX_VALUE))
+            .addComponent(jSplitPane3)
         );
 
         jSplitPane2.setTopComponent(ToolsPanel);
@@ -312,6 +350,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         ToolsMenu.add(ExtractMenuButton);
+
+        jMenuItem2.setText("Dump selected .tex to .dds...");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        ToolsMenu.add(jMenuItem2);
 
         DecompressorMenuButton.setText("Decompressor...");
         DecompressorMenuButton.setToolTipText("Decompress a game data file to a raw, editable file.");
@@ -495,9 +541,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_ExtractMenuButtonActionPerformed
 
-    private void TestButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButton1ActionPerformed
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
-    }//GEN-LAST:event_TestButton1ActionPerformed
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+
+        
+    }//GEN-LAST:event_formWindowClosed
 
     private void showUserDialog(String title, String message) {
         if (title == "Warning") {
@@ -507,23 +558,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
 
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
 
-    public static String byteArrayToHexString(byte[] bytes) {
-        Formatter formatter = new Formatter();
-        for (byte b : bytes) {
-            formatter.format("%02x", b);
-        }
-        return formatter.toString();
-    }
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -568,18 +603,22 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem OpenFarc;
     private javax.swing.JTextArea OutputTextArea;
     private javax.swing.JOptionPane PopUpMessage;
+    private javax.swing.JLabel PreviewLabel;
+    private javax.swing.JPanel PreviewPanel;
     private javax.swing.JSplitPane RightHandStuff;
-    private javax.swing.JButton TestButton1;
     private javax.swing.JMenu ToolsMenu;
     private javax.swing.JPanel ToolsPanel;
+    private javax.swing.JPanel ToolsPanel2;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JProgressBar mapLoadingBar;
     private javax.swing.JTree mapTree;
     private javax.swing.JPanel pnlOutput;

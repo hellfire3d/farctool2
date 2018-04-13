@@ -27,7 +27,10 @@ public class MapParser {
             if (header == 21496064) {
                 System.out.println("Detected: LBP3 Map File");
             }
-            if (header != 256 && header != 21496064) {
+            if (header == 936) {
+                System.out.println("Detected: LBP Vita Map File");
+            }
+            if (header != 256 && header != 21496064 && header != 936) {
                 throw new IOException("Error reading 4 bytes - not a valid .map file");
             }
             seek += 4;
