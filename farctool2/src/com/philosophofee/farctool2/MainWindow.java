@@ -13,6 +13,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 import javax.swing.ImageIcon;
 
 import javax.swing.JFileChooser;
@@ -124,6 +125,8 @@ public class MainWindow extends javax.swing.JFrame {
                         mapAccess.close();
 
                     } catch (IOException ex) {
+                    } catch (DataFormatException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     try {
                         if (finalString.contains(".tex")) { 
@@ -542,7 +545,9 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_ExtractMenuButtonActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+        try {
+            ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+        } catch (DataFormatException ex) {}
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
