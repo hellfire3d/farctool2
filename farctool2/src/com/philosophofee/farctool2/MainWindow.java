@@ -42,6 +42,7 @@ public class MainWindow extends javax.swing.JFrame {
         mapTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         mapTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
+                
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) mapTree.getLastSelectedPathComponent();
                 if (node == null) {
                     return;
@@ -116,8 +117,11 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                         EditorPanel.setValueAt(fileHash, 3, 2); //set hex hash
                         currSHA1 = fileHash;
-                        if (currFileName.contains(".tex")) {
-                            ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+                        if (bigBoyFarc!=null) {
+                            if (currFileName.contains(".tex")) {
+                                ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+                                PreviewLabel.setIcon(MiscUtils.createDDSIcon("temp_prev_tex"));
+                            }
                         }
                         EditorPanel.setValueAt(fileHash, 3, 1); //set readable hash (redundant)
 
@@ -137,13 +141,7 @@ public class MainWindow extends javax.swing.JFrame {
                     } catch (DataFormatException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    try {
-                        if (finalString.contains(".tex")) { 
-                            PreviewLabel.setIcon(MiscUtils.createDDSIcon("temp_prev_tex"));
-                            System.out.println("it's a tex, homie");
-                        } //pump that shit homie
-                        } catch (IOException ex) {
-                    }
+                    
                 } else {
                     //System.out.println("You currently have selected " + finalString + "/. This is a folder!");
                 }

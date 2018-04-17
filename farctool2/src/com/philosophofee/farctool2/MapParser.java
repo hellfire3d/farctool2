@@ -1,6 +1,9 @@
 package com.philosophofee.farctool2;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Enumeration;
@@ -12,17 +15,17 @@ public class MapParser {
 
     public DefaultTreeModel parseMapIntoMemory(TreeNode root, File file) {
         DefaultTreeModel model = new DefaultTreeModel(root);
-
         try {
-            long begin = System.currentTimeMillis();
-            MapParser self = new MapParser();
-            RandomAccessFile mapAccess = new RandomAccessFile(file, "rw");
-            int seek = 0;
+            //Create data input stream
+            DataInputStream mapAccess = new DataInputStream(new FileInputStream(file));
             
-            boolean lbp3map=false;
-
+            //Starting variables
+            long begin = System.currentTimeMillis();
+            boolean lbp3map = false;
+            
             //Read header
             int header = mapAccess.readInt();
+            
             if (header == 256) {
                 System.out.println("Detected: LBP1/2 Map File");
             }
@@ -36,91 +39,66 @@ public class MapParser {
             if (header != 256 && header != 21496064 && header != 936) {
                 throw new IOException("Error reading 4 bytes - not a valid .map file");
             }
-            seek += 4;
-            mapAccess.seek(seek); //ok, were done!
-
+            
             //Read map entry count
             int mapEntries = mapAccess.readInt();
             System.out.println(mapEntries + " entries in file");
-            seek += 4;
-            mapAccess.seek(seek); //ok, were done!
-
+            
             //Read entry
             int fileNameLength = 0;
             String fileName = "";
             int fileSize = 0;
             String SHA1 = "";
             int GUID = 0;
-
+            
             for (int i = 0; i < mapEntries; i++) {
                 
                 //seek 2 bytes (for lbp1/2 file only)
                 if (lbp3map==false) {
-                    seek += 2;
-                    mapAccess.seek(seek);
+                    mapAccess.skip(2);
                 }
-                //get filename length
+                //get filename
                 fileNameLength = mapAccess.readShort();
-                //System.out.println("entry length=" + fileNameLength);
-                fileName = ""; // reset
-                seek += 2;
-                mapAccess.seek(seek);
-
-                //get filename string
-                for (int i2 = 0; i2 < fileNameLength; i2++) {
-                    fileName += (char) mapAccess.readByte();
-                    seek += 1;
-                    mapAccess.seek(seek);
-                }//for filename
-
+                byte[] fileNameBytes = new byte[fileNameLength];
+                mapAccess.read(fileNameBytes);
+                fileName = new String(fileNameBytes);
+                
                 //padding, 0x000000 (LBP1/2 ONLY)
                 if (lbp3map==false) {
-                    seek += 4;
-                    mapAccess.seek(seek);
+                    mapAccess.skip(4);
                 }
+                
                 //DATE, maybe fix later but unimportant now
-                seek += 4;
-                mapAccess.seek(seek);
-
+                mapAccess.skip(4);
+                
                 //File size 4 bytes
                 fileSize = mapAccess.readInt();
-                seek += 4;
-                mapAccess.seek(seek);
-
+                
                 //Hash 20 bytes
-                SHA1 = "";
-                for (int i3 = 0; i3 < 20; i3++) {
-                    SHA1 += String.format("%02X", mapAccess.readByte());
-                    seek += 1;
-                    mapAccess.seek(seek);
-                }
+                byte[] SHA1Bytes = new byte[20]; 
+                mapAccess.read(SHA1Bytes);
+                SHA1 = MiscUtils.byteArrayToHexString(SHA1Bytes);
+                
                 //GUID 4 bytes
-                GUID = 0;
                 GUID = mapAccess.readInt();
-                seek += 4;
-                mapAccess.seek(seek);
-                //self.addPath(fileName);
+                
                 buildTreeFromString(model, fileName);
-                //System.out.println(fileName + " | size: " + fileSize + " | sha1: " + SHA1 + " | GUID: " + GUID);
+            
             }//for each map entry
 
-            //Close map
-            mapAccess.close();
             long end = System.currentTimeMillis();
             long timeTook = end - begin;
 
             System.out.println("Map parsed in " + (timeTook / 1000) + " seconds (" + timeTook + "ms)");
-            //self.printHtml(System.out);
-        } catch (IOException e) {
-            System.out.println("IOException:");
-            e.printStackTrace();
-        }
+            
+            //OK, we're done
+            mapAccess.close();
+            
+        }   catch(FileNotFoundException ex) {}
+            catch(IOException ex) {}
         return model;
     }
-
-    //public void loadMap(File file) {
-    //    parseMapIntoMemory(file);
-    //}
+    
     private void buildTreeFromString(final DefaultTreeModel model, final String str) {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
 

@@ -74,6 +74,12 @@ public class ZlibUtils {
                 System.out.println("GTF file");
                 decompressGTF(workingFile);  
                 break;
+            case "47544673":
+                System.out.println("PS Vita GTF Swizzled (GXT) (Simple Header) - Not yet implemented");
+                break;
+            case "47544653":
+                System.out.println("PS Vita GTF Swizzled (GXT) (Extended Header) - Not yet implemented");
+                break;
             default:
                 System.out.println("Not implemented");
                 break;
