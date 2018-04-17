@@ -70,13 +70,20 @@ public class MainWindow extends javax.swing.JFrame {
 
                     try {
                         int offset = 0;
+                        boolean lbp3map=false;
                         offset = matcher.indexOf(Files.readAllBytes(bigBoy.toPath()), finalString.getBytes());
                         RandomAccessFile mapAccess = new RandomAccessFile(bigBoy, "rw");
+                        mapAccess.seek(0);
+                        if (mapAccess.readInt()==21496064) {lbp3map=true;}
+                        
                         mapAccess.seek(offset);
                         offset += finalString.length();
                         mapAccess.seek(offset);
-                        offset += 4;
-                        mapAccess.seek(offset);
+                        
+                        if (lbp3map==false) {
+                            offset += 4;
+                            mapAccess.seek(offset);
+                        }
 
                         //Get timestamp
                         String fileTimeStamp = "";
@@ -109,7 +116,9 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                         EditorPanel.setValueAt(fileHash, 3, 2); //set hex hash
                         currSHA1 = fileHash;
-                        ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+                        if (currFileName.contains(".tex")) {
+                            ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+                        }
                         EditorPanel.setValueAt(fileHash, 3, 1); //set readable hash (redundant)
 
                         //Get size

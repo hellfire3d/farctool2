@@ -18,6 +18,8 @@ public class MapParser {
             MapParser self = new MapParser();
             RandomAccessFile mapAccess = new RandomAccessFile(file, "rw");
             int seek = 0;
+            
+            boolean lbp3map=false;
 
             //Read header
             int header = mapAccess.readInt();
@@ -26,6 +28,7 @@ public class MapParser {
             }
             if (header == 21496064) {
                 System.out.println("Detected: LBP3 Map File");
+                lbp3map=true;
             }
             if (header == 936) {
                 System.out.println("Detected: LBP Vita Map File");
@@ -50,12 +53,17 @@ public class MapParser {
             int GUID = 0;
 
             for (int i = 0; i < mapEntries; i++) {
-
+                
+                //seek 2 bytes (for lbp1/2 file only)
+                if (lbp3map==false) {
+                    seek += 2;
+                    mapAccess.seek(seek);
+                }
                 //get filename length
-                fileNameLength = mapAccess.readInt();
+                fileNameLength = mapAccess.readShort();
                 //System.out.println("entry length=" + fileNameLength);
                 fileName = ""; // reset
-                seek += 4;
+                seek += 2;
                 mapAccess.seek(seek);
 
                 //get filename string
@@ -65,10 +73,11 @@ public class MapParser {
                     mapAccess.seek(seek);
                 }//for filename
 
-                //padding, 0x000000
-                seek += 4;
-                mapAccess.seek(seek);
-
+                //padding, 0x000000 (LBP1/2 ONLY)
+                if (lbp3map==false) {
+                    seek += 4;
+                    mapAccess.seek(seek);
+                }
                 //DATE, maybe fix later but unimportant now
                 seek += 4;
                 mapAccess.seek(seek);
