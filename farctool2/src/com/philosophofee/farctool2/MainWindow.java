@@ -27,6 +27,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import org.riversun.bigdoc.bin.BigFileSearcher;
 
+import tv.porst.jhexview.*;
+import tv.porst.jhexview.JHexView.DefinitionStatus;
+
 public class MainWindow extends javax.swing.JFrame {
 
     public File bigBoy = null;
@@ -36,7 +39,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     public MainWindow() {
         initComponents();
-        
+        PreviewLabel.setVisible(false);
+        TextPrevScroll.setVisible(false);
+        TextPreview.setVisible(false);
         
         setIconImage(new ImageIcon(getClass().getResource("resources/farctool2_icon.png")).getImage());
         mapTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -118,10 +123,33 @@ public class MainWindow extends javax.swing.JFrame {
                         EditorPanel.setValueAt(fileHash, 3, 2); //set hex hash
                         currSHA1 = fileHash;
                         if (bigBoyFarc!=null) {
+                            PreviewLabel.setVisible(true);
+                            PreviewLabel.setIcon(null);
+                            PreviewLabel.setText("No preview available");
+                            TextPrevScroll.setVisible(false);
+                            TextPreview.setVisible(false);
+                            
+                            byte[] workWithData = FarcUtils.pullFromFarc(currSHA1, bigBoyFarc);
+                            
                             if (currFileName.contains(".tex")) {
-                                ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
+                                ZlibUtils.decompressThis(workWithData);
+                                PreviewLabel.setVisible(true);
+                                TextPrevScroll.setVisible(false);
+                                TextPreview.setVisible(false);
+                                PreviewLabel.setText(null);
                                 PreviewLabel.setIcon(MiscUtils.createDDSIcon("temp_prev_tex"));
                             }
+                            if (currFileName.contains(".cha")) {
+                                PreviewLabel.setVisible(false);
+                                TextPrevScroll.setVisible(true);
+                                TextPreview.setVisible(true);
+                                TextPreview.setText(new String(workWithData));
+                                TextPreview.setCaretPosition(0);
+                            }
+                            hexViewer.setData(new SimpleDataProvider(workWithData));
+                            hexViewer.setDefinitionStatus(DefinitionStatus.DEFINED);
+                            hexViewer.setEnabled(true);
+                            
                         }
                         EditorPanel.setValueAt(fileHash, 3, 1); //set readable hash (redundant)
 
@@ -171,8 +199,11 @@ public class MainWindow extends javax.swing.JFrame {
         ToolsPanel = new javax.swing.JPanel();
         jSplitPane3 = new javax.swing.JSplitPane();
         PreviewPanel = new javax.swing.JPanel();
-        PreviewLabel = new javax.swing.JLabel();
+        hexViewer = new tv.porst.jhexview.JHexView();
         ToolsPanel2 = new javax.swing.JPanel();
+        PreviewLabel = new javax.swing.JLabel();
+        TextPrevScroll = new javax.swing.JScrollPane();
+        TextPreview = new javax.swing.JTextArea();
         jScrollPane1 = new javax.swing.JScrollPane();
         EditorPanel = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -205,14 +236,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        jSplitPane1.setDividerLocation(120);
+        jSplitPane1.setDividerLocation(150);
 
         mapTree.setModel(null);
         MapPanel.setViewportView(mapTree);
 
         jSplitPane1.setLeftComponent(MapPanel);
 
-        RightHandStuff.setDividerLocation(301);
+        RightHandStuff.setDividerLocation(400);
         RightHandStuff.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         OutputTextArea.setEditable(false);
@@ -227,48 +258,62 @@ public class MainWindow extends javax.swing.JFrame {
         pnlOutputLayout.setHorizontalGroup(
             pnlOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mapLoadingBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE)
         );
         pnlOutputLayout.setVerticalGroup(
             pnlOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOutputLayout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mapLoadingBar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         RightHandStuff.setRightComponent(pnlOutput);
 
-        jSplitPane2.setDividerLocation(140);
+        jSplitPane2.setDividerLocation(256);
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        jSplitPane3.setDividerLocation(100);
-
-        PreviewLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        PreviewLabel.setAlignmentX(0.5F);
+        jSplitPane3.setDividerLocation(256);
 
         javax.swing.GroupLayout PreviewPanelLayout = new javax.swing.GroupLayout(PreviewPanel);
         PreviewPanel.setLayout(PreviewPanelLayout);
         PreviewPanelLayout.setHorizontalGroup(
             PreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+            .addComponent(hexViewer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         PreviewPanelLayout.setVerticalGroup(
             PreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+            .addComponent(hexViewer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jSplitPane3.setRightComponent(PreviewPanel);
+
+        PreviewLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        PreviewLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        PreviewLabel.setAlignmentX(0.5F);
+
+        TextPreview.setColumns(20);
+        TextPreview.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        TextPreview.setRows(5);
+        TextPrevScroll.setViewportView(TextPreview);
 
         javax.swing.GroupLayout ToolsPanel2Layout = new javax.swing.GroupLayout(ToolsPanel2);
         ToolsPanel2.setLayout(ToolsPanel2Layout);
         ToolsPanel2Layout.setHorizontalGroup(
             ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 255, Short.MAX_VALUE)
+            .addGroup(ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(PreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
+            .addGroup(ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(TextPrevScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
         );
         ToolsPanel2Layout.setVerticalGroup(
             ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 137, Short.MAX_VALUE)
+            .addGap(0, 253, Short.MAX_VALUE)
+            .addGroup(ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(PreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
+            .addGroup(ToolsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(TextPrevScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
         );
 
         jSplitPane3.setLeftComponent(ToolsPanel2);
@@ -390,11 +435,11 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 914, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
         );
 
         pack();
@@ -618,10 +663,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel PreviewLabel;
     private javax.swing.JPanel PreviewPanel;
     private javax.swing.JSplitPane RightHandStuff;
+    private javax.swing.JScrollPane TextPrevScroll;
+    private javax.swing.JTextArea TextPreview;
     private javax.swing.JMenu ToolsMenu;
     private javax.swing.JPanel ToolsPanel;
     private javax.swing.JPanel ToolsPanel2;
     private javax.swing.JFileChooser fileChooser;
+    private tv.porst.jhexview.JHexView hexViewer;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
