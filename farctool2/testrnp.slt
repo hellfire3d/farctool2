@@ -1,0 +1,36 @@
+SLTt
+Slots	2
+	[0]	
+		SlotID	
+			Type	0
+			SlotNumber	1
+		Level	gamedata/levels/00_developer_levels_episode_1/england_garden/england_garden_main_1.bin
+			guid_hash_inline_bitfield	
+		Icon	gamedata/texture_library/level_badges/tutorial_level_01.tex
+			guid_hash_inline_bitfield	
+		Location	-0.0395287,0.840206,0.540825,0
+		Author	"Marcos"
+		Name	"The English Garden &apos;First Steps&apos;"
+		Description	"Learn to Run and Jump"
+		PrimaryLinkLevel	
+			Type	0
+			SlotNumber	2
+		InitiallyLocked	false
+		StoryLevel	true
+	[1]	
+		SlotID	
+			Type	0
+			SlotNumber	2
+		Level	gamedata/levels/00_developer_levels_episode_1/england_garden/england_garden_main_2.bin
+			guid_hash_inline_bitfield	
+		Icon	gamedata/texture_library/level_badges/tutorial_level_02.tex
+			guid_hash_inline_bitfield	
+		Location	-0.0344782,0.820829,0.570133,0
+		Author	"Marcos"
+		Name	"The English Garden &apos;Get a Grip&apos;"
+		Description	"Learn to grab things"
+		PrimaryLinkLevel	
+			Type	0
+			SlotNumber	3
+		InitiallyLocked	true
+		StoryLevel	true

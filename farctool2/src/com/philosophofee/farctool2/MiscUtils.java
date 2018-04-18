@@ -6,20 +6,19 @@
 package com.philosophofee.farctool2;
 
 import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Formatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import net.npe.dds.DDSReader;
+import org.riversun.bigdoc.bin.BigFileSearcher;
 
 /**
  *
@@ -34,6 +33,73 @@ public class MiscUtils {
     public static File returnFile(String file) {
         File to = new File(file);
         return to;
+    }
+    
+    public static String getFileNameFromGUID(String myGUID, File inputMap) {
+        int usableGUID = Integer.parseInt(myGUID, 16);
+        try {
+            //Create data input stream
+            DataInputStream mapAccess = new DataInputStream(new FileInputStream(inputMap));
+            
+            //Starting variables
+            boolean lbp3map = false;
+            
+            //Read header
+            int header = mapAccess.readInt();
+            
+            if (header == 21496064) {
+                lbp3map=true;
+            }
+            if (header != 256 && header != 21496064 && header != 936) {
+                throw new IOException("Error reading 4 bytes - not a valid .map file");
+            }
+            
+            //Read map entry count
+            int mapEntries = mapAccess.readInt();
+            
+            //Read entry
+            int fileNameLength = 0;
+            String fileName = "";
+            int GUID = 0;
+            
+            for (int i = 0; i < mapEntries; i++) {
+                
+                //seek 2 bytes (for lbp1/2 file only)
+                if (lbp3map==false) {
+                    mapAccess.skip(2);
+                }
+                //get filename
+                fileNameLength = mapAccess.readShort();
+                byte[] fileNameBytes = new byte[fileNameLength];
+                mapAccess.read(fileNameBytes);
+                fileName = new String(fileNameBytes);
+                
+                //padding, 0x000000 (LBP1/2 ONLY)
+                if (lbp3map==false) {
+                    mapAccess.skip(4);
+                }
+                
+                //DATE, maybe fix later but unimportant now           
+                //File size 4 bytes
+                //Hash 20 bytes
+                mapAccess.skip(28);
+                
+                //GUID 4 bytes
+                GUID = mapAccess.readInt();
+                
+                if (GUID==usableGUID) {
+                    return fileName;
+                }
+                //buildTreeFromString(model, fileName);
+            
+            }//for each map entry
+
+            //OK, we're done
+            mapAccess.close();
+            
+        }   catch(FileNotFoundException ex) {}
+            catch(IOException ex) {}
+        return "Error finding GUID filename";
     }
     
     public static byte[] hexStringToByteArray(String s) {

@@ -94,6 +94,14 @@
                 <Property name="toolTipText" type="java.lang.String" value="Compress a raw data file to a file loadable by the game."/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="PrintDependenciesButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Print dependencies..."/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PrintDependenciesButtonActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>

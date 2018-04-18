@@ -1,6 +1,7 @@
 package com.philosophofee.farctool2;
 
 import java.awt.Toolkit;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -230,6 +231,7 @@ public class MainWindow extends javax.swing.JFrame {
         ExportTextureButton = new javax.swing.JMenuItem();
         DecompressorMenuButton = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        PrintDependenciesButton = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -441,6 +443,14 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem1.setToolTipText("Compress a raw data file to a file loadable by the game.");
         ToolsMenu.add(jMenuItem1);
 
+        PrintDependenciesButton.setText("Print dependencies...");
+        PrintDependenciesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PrintDependenciesButtonActionPerformed(evt);
+            }
+        });
+        ToolsMenu.add(PrintDependenciesButton);
+
         jMenuBar1.add(ToolsMenu);
 
         setJMenuBar(jMenuBar1);
@@ -638,6 +648,62 @@ public class MainWindow extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowClosed
 
+    private void PrintDependenciesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintDependenciesButtonActionPerformed
+        try {
+            byte[] bytesToRead = FarcUtils.pullFromFarc(currSHA1, bigBoyFarc);
+            ByteArrayInputStream fileAccess = new ByteArrayInputStream(bytesToRead);
+            fileAccess.skip(8);
+            //Get dependencies offset
+            byte[] offsetDependenciesByte = new byte[4];
+            fileAccess.read(offsetDependenciesByte);
+            int offsetDependencies = Integer.parseInt(MiscUtils.byteArrayToHexString(offsetDependenciesByte), 16);
+            //System.out.println("Dependencies offset in hex: " + MiscUtils.byteArrayToHexString(offsetDependenciesByte));
+            System.out.println("Dependencies offset: " + offsetDependencies);
+            
+            fileAccess.skip(offsetDependencies-12);
+            
+            byte[] dependenciesCountByte = new byte[4];
+            fileAccess.read(dependenciesCountByte);
+            int dependenciesCount = Integer.parseInt(MiscUtils.byteArrayToHexString(dependenciesCountByte), 16);
+            
+            System.out.println("Dependencies count: " + dependenciesCount);
+            
+            byte[] dependencyKindByte = new byte[1];
+            byte[] dependencyGUIDByte = new byte[4];
+            int dependencyGUID = 0;
+            byte[] dependencyTypeByte = new byte[4];
+            int dependencyType = 0;
+            boolean levelFail = false;
+            
+            for (int i=0; i<dependenciesCount; i++ ) {
+                fileAccess.read(dependencyKindByte);
+                if (dependencyKindByte[0]==0x01) {
+                    fileAccess.skip(20); //sha1
+                    fileAccess.skip(4);
+                }
+                if (dependencyKindByte[0]==0x02) {
+                    fileAccess.read(dependencyGUIDByte);
+                    dependencyGUID = Integer.parseInt(MiscUtils.byteArrayToHexString(dependencyGUIDByte), 16);
+                    
+                    fileAccess.read(dependencyTypeByte);
+                    dependencyType = Integer.parseInt(MiscUtils.byteArrayToHexString(dependencyTypeByte), 16);
+                    String fileNameNew = MiscUtils.getFileNameFromGUID(MiscUtils.byteArrayToHexString(dependencyGUIDByte),bigBoy);
+                    if (fileNameNew.contains("Error")) {
+                        levelFail=true;
+                    }
+                    System.out.println((i+1) + ": " + fileNameNew + " | " + "g" + dependencyGUID + " | " + dependencyType);
+                }
+                
+            }
+            if (levelFail==true) {
+                System.out.println("ERROR! The level contains at least one dependency that does not exist. You will have problems.");
+            }
+            
+        } catch (IOException ex) {
+        } catch (NullPointerException ex) {
+        }
+    }//GEN-LAST:event_PrintDependenciesButtonActionPerformed
+
     private void showUserDialog(String title, String message) {
         if (title == "Warning") {
             PopUpMessage.showMessageDialog(PopUpMessage, message, title, PopUpMessage.WARNING_MESSAGE);
@@ -694,6 +760,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JOptionPane PopUpMessage;
     private javax.swing.JLabel PreviewLabel;
     private javax.swing.JPanel PreviewPanel;
+    private javax.swing.JMenuItem PrintDependenciesButton;
     private javax.swing.JSplitPane RightHandStuff;
     private javax.swing.JScrollPane TextPrevScroll;
     private javax.swing.JTextArea TextPreview;

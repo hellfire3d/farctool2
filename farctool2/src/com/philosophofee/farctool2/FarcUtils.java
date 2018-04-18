@@ -8,6 +8,9 @@ import org.riversun.bigdoc.bin.BigFileSearcher;
 
 public class FarcUtils {
 
+    //public static byte[] pullFromFarcFileName(String filename) {
+        
+    //}
     public static byte[] pullFromFarc(String currSHA1, File bigBoyFarc) {
         System.out.println("Converting " + currSHA1 + " to byte array...");
         
