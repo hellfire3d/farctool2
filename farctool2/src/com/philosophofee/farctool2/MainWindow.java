@@ -145,6 +145,9 @@ public class MainWindow extends javax.swing.JFrame {
                             byte[] workWithData = FarcUtils.pullFromFarc(currSHA1, bigBoyFarc);
                             if (workWithData==null) {
                                 System.out.println("As a result, I wasn't able to preview anything...");
+                                hexViewer.setData(null);
+                                hexViewer.setDefinitionStatus(DefinitionStatus.UNDEFINED);
+                                hexViewer.setEnabled(false);
                                 return;
                             }
                             if (
