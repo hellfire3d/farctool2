@@ -47,9 +47,6 @@ public class MapParser {
             //Read entry
             int fileNameLength = 0;
             String fileName = "";
-            int fileSize = 0;
-            String SHA1 = "";
-            int GUID = 0;
             
             for (int i = 0; i < mapEntries; i++) {
                 
@@ -68,20 +65,25 @@ public class MapParser {
                     mapAccess.skip(4);
                 }
                 
+                //LITERALLY THIS ENTIRE SECTION IS USELESS AS WE GET THE VALUES
+                //AT A LATER POINT IN TIME
                 //DATE, maybe fix later but unimportant now
-                mapAccess.skip(4);
+                //mapAccess.skip(4);
                 
                 //File size 4 bytes
-                fileSize = mapAccess.readInt();
+                //mapAccess.skip(4);
                 
                 //Hash 20 bytes
-                byte[] SHA1Bytes = new byte[20]; 
-                mapAccess.read(SHA1Bytes);
-                SHA1 = MiscUtils.byteArrayToHexString(SHA1Bytes);
+                //byte[] SHA1Bytes = new byte[20]; 
+                //mapAccess.read(SHA1Bytes);
+                //SHA1 = MiscUtils.byteArrayToHexString(SHA1Bytes);
+                //mapAccess.skip(20);
                 
                 //GUID 4 bytes
-                GUID = mapAccess.readInt();
+                //mapAccess.skip(4);
+                //GUID = mapAccess.readInt();
                 
+                mapAccess.skip(32);
                 buildTreeFromString(model, fileName);
             
             }//for each map entry
