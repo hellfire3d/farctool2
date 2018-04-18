@@ -122,35 +122,6 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                         EditorPanel.setValueAt(fileHash, 3, 2); //set hex hash
                         currSHA1 = fileHash;
-                        if (bigBoyFarc!=null) {
-                            PreviewLabel.setVisible(true);
-                            PreviewLabel.setIcon(null);
-                            PreviewLabel.setText("No preview available");
-                            TextPrevScroll.setVisible(false);
-                            TextPreview.setVisible(false);
-                            
-                            byte[] workWithData = FarcUtils.pullFromFarc(currSHA1, bigBoyFarc);
-                            
-                            if (currFileName.contains(".tex")) {
-                                ZlibUtils.decompressThis(workWithData);
-                                PreviewLabel.setVisible(true);
-                                TextPrevScroll.setVisible(false);
-                                TextPreview.setVisible(false);
-                                PreviewLabel.setText(null);
-                                PreviewLabel.setIcon(MiscUtils.createDDSIcon("temp_prev_tex"));
-                            }
-                            if (currFileName.contains(".cha")) {
-                                PreviewLabel.setVisible(false);
-                                TextPrevScroll.setVisible(true);
-                                TextPreview.setVisible(true);
-                                TextPreview.setText(new String(workWithData));
-                                TextPreview.setCaretPosition(0);
-                            }
-                            hexViewer.setData(new SimpleDataProvider(workWithData));
-                            hexViewer.setDefinitionStatus(DefinitionStatus.DEFINED);
-                            hexViewer.setEnabled(true);
-                            
-                        }
                         EditorPanel.setValueAt(fileHash, 3, 1); //set readable hash (redundant)
 
                         //Get size
@@ -163,6 +134,49 @@ public class MainWindow extends javax.swing.JFrame {
                         EditorPanel.setValueAt(fileGUID, 4, 2); //set hex guid
                         EditorPanel.setValueAt("g" + Integer.parseInt(fileGUID, 16), 4, 1); //set readable guid
 
+                        if (bigBoyFarc!=null) {
+                            PreviewLabel.setVisible(true);
+                            PreviewLabel.setIcon(null);
+                            PreviewLabel.setText("No preview available");
+                            TextPrevScroll.setVisible(false);
+                            TextPreview.setVisible(false);
+                            
+                            byte[] workWithData = FarcUtils.pullFromFarc(currSHA1, bigBoyFarc);
+                            if (workWithData==null) {
+                                System.out.println("As a result, I wasn't able to preview anything...");
+                                return;
+                            }
+                            if (
+                                    workWithData[3]==0x74 || 
+                                    currFileName.contains(".nws") || 
+                                    currFileName.contains(".txt") || 
+                                    currFileName.contains(".rlst") || 
+                                    currFileName.contains(".xml") || 
+                                    currFileName.contains(".cha")
+                                ) 
+                            {
+                                //Text file we can read with the text preview pane
+                                PreviewLabel.setVisible(false);
+                                TextPrevScroll.setVisible(true);
+                                TextPreview.setVisible(true);
+                                TextPreview.setText(new String(workWithData));
+                                TextPreview.setCaretPosition(0);                            
+                            }
+                            if (currFileName.contains(".tex")) {
+                                ZlibUtils.decompressThis(workWithData);
+                                PreviewLabel.setVisible(true);
+                                TextPrevScroll.setVisible(false);
+                                TextPreview.setVisible(false);
+                                PreviewLabel.setText(null);
+                                PreviewLabel.setIcon(MiscUtils.createDDSIcon("temp_prev_tex"));
+                            }
+                            
+                            hexViewer.setData(new SimpleDataProvider(workWithData));
+                            hexViewer.setDefinitionStatus(DefinitionStatus.DEFINED);
+                            hexViewer.setEnabled(true);
+                            
+                        }
+                        
                         mapAccess.close();
 
                     } catch (IOException ex) {
@@ -213,7 +227,7 @@ public class MainWindow extends javax.swing.JFrame {
         Exit = new javax.swing.JMenuItem();
         ToolsMenu = new javax.swing.JMenu();
         ExtractMenuButton = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        ExportTextureButton = new javax.swing.JMenuItem();
         DecompressorMenuButton = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
 
@@ -406,13 +420,13 @@ public class MainWindow extends javax.swing.JFrame {
         });
         ToolsMenu.add(ExtractMenuButton);
 
-        jMenuItem2.setText("Dump selected .tex to .dds...");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        ExportTextureButton.setText("Export texture to file...");
+        ExportTextureButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                ExportTextureButtonActionPerformed(evt);
             }
         });
-        ToolsMenu.add(jMenuItem2);
+        ToolsMenu.add(ExportTextureButton);
 
         DecompressorMenuButton.setText("Decompressor...");
         DecompressorMenuButton.setToolTipText("Decompress a game data file to a raw, editable file.");
@@ -596,11 +610,28 @@ public class MainWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_ExtractMenuButtonActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void ExportTextureButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportTextureButtonActionPerformed
         try {
-            ZlibUtils.decompressThis(FarcUtils.pullFromFarc(currSHA1, bigBoyFarc));
-        } catch (DataFormatException ex) {}
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+            //get name of output file
+            if (currFileName.contains(".tex")==false) { 
+                System.out.println("You're trying to convert a non-texture to a png, dummy!");
+                return; }
+            String outputFileName = currFileName.substring(currFileName.lastIndexOf("/") + 1) + ".png";
+            File outputFile = new File(outputFileName);
+
+            fileChooser.setFileFilter(null);
+            fileChooser.setSelectedFile(outputFile);
+            int returnVal = fileChooser.showSaveDialog(this);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                outputFile = fileChooser.getSelectedFile();
+                System.out.println("Gonna try extracting now!");
+                MiscUtils.DDStoSavePNG("temp_prev_tex", outputFile);
+            }
+        } catch (IOException ex) {
+        } catch (NullPointerException ex) {
+        }
+    }//GEN-LAST:event_ExportTextureButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
@@ -653,6 +684,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem DecompressorMenuButton;
     private javax.swing.JTable EditorPanel;
     private javax.swing.JMenuItem Exit;
+    private javax.swing.JMenuItem ExportTextureButton;
     private javax.swing.JMenuItem ExtractMenuButton;
     private javax.swing.JMenu FileMenu;
     private javax.swing.JScrollPane MapPanel;
@@ -673,7 +705,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JFrame jFrame1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;

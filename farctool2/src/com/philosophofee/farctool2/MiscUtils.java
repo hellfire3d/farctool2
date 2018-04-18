@@ -16,6 +16,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Formatter;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import net.npe.dds.DDSReader;
@@ -100,9 +101,33 @@ public class MiscUtils {
         int height = DDSReader.getHeight(buffer);
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         image.setRGB(0, 0, width, height, pixels, 0, width);
-
-        return new ImageIcon(image.getScaledInstance(256, 256, BufferedImage.SCALE_SMOOTH));
         
+        if (width>256 || height>256) {
+            if (width>height) {
+                return new ImageIcon(image.getScaledInstance(256, 128, BufferedImage.SCALE_SMOOTH));
+            }
+            if (width<height) {
+                return new ImageIcon(image.getScaledInstance(128, 256, BufferedImage.SCALE_SMOOTH));
+            }
+            return new ImageIcon(image.getScaledInstance(256, 256, BufferedImage.SCALE_SMOOTH));
+        }
+        return new ImageIcon(image.getScaledInstance(width, height, BufferedImage.SCALE_SMOOTH));
+    }
+    
+    
+    
+    public static void DDStoSavePNG(String path, File outputfile) throws IOException, NullPointerException {
+        FileInputStream fis = new FileInputStream(path);
+        byte [] buffer = new byte[fis.available()];
+        fis.read(buffer);
+        fis.close();
+        int [] pixels = DDSReader.read(buffer, DDSReader.ARGB, 0);
+        int width = DDSReader.getWidth(buffer);
+        int height = DDSReader.getHeight(buffer);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        image.setRGB(0, 0, width, height, pixels, 0, width);
+        
+        ImageIO.write(image, "png", outputfile);
     }
     
     public static String reverseHex(String originalHex) {

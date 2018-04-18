@@ -209,9 +209,9 @@ public class ZlibUtils {
             FileOutputStream fos = new FileOutputStream("temp_prev_tex");
             
             fos.write(MiscUtils.hexStringToByteArray("444453207C00000007100A00"));
-            fos.write(MiscUtils.hexStringToByteArray(MiscUtils.convertShortHexStringToLittleEndian(widthHex)));
-            fos.write(MiscUtils.hexStringToByteArray("0000"));
             fos.write(MiscUtils.hexStringToByteArray(MiscUtils.convertShortHexStringToLittleEndian(heightHex)));
+            fos.write(MiscUtils.hexStringToByteArray("0000"));
+            fos.write(MiscUtils.hexStringToByteArray(MiscUtils.convertShortHexStringToLittleEndian(widthHex)));
             fos.write(MiscUtils.hexStringToByteArray("0000"));
             fos.write(MiscUtils.hexStringToByteArray("00400000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000004000000"));
             if (DXTMode =="DXT1") {
