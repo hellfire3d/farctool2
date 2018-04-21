@@ -45,6 +45,8 @@ public class MainWindow extends javax.swing.JFrame {
         TextPreview.setVisible(false);
         
         setIconImage(new ImageIcon(getClass().getResource("resources/farctool2_icon.png")).getImage());
+        aboutWindow.setIconImage(new ImageIcon(getClass().getResource("resources/farctool2_icon.png")).getImage());
+        
         mapTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         mapTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
@@ -205,6 +207,13 @@ public class MainWindow extends javax.swing.JFrame {
         fileChooser = new javax.swing.JFileChooser();
         jFrame1 = new javax.swing.JFrame();
         PopUpMessage = new javax.swing.JOptionPane();
+        aboutWindow = new javax.swing.JFrame();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jSplitPane1 = new javax.swing.JSplitPane();
         MapPanel = new javax.swing.JScrollPane();
         mapTree = new javax.swing.JTree();
@@ -232,9 +241,11 @@ public class MainWindow extends javax.swing.JFrame {
         ToolsMenu = new javax.swing.JMenu();
         ExtractMenuButton = new javax.swing.JMenuItem();
         ExportTextureButton = new javax.swing.JMenuItem();
+        PrintDependenciesButton = new javax.swing.JMenuItem();
         DecompressorMenuButton = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
-        PrintDependenciesButton = new javax.swing.JMenuItem();
+        HelpMenu = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -245,6 +256,79 @@ public class MainWindow extends javax.swing.JFrame {
         jFrame1Layout.setVerticalGroup(
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        aboutWindow.setTitle("farctool2 :)");
+        aboutWindow.setAlwaysOnTop(true);
+        aboutWindow.setMinimumSize(new java.awt.Dimension(450, 225));
+        aboutWindow.setPreferredSize(new java.awt.Dimension(450, 225));
+        aboutWindow.setResizable(false);
+
+        jTextArea2.setEditable(false);
+        jTextArea2.setColumns(20);
+        jTextArea2.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
+        jTextArea2.setRows(5);
+        jTextArea2.setText("Special thanks to:\n\n \"The man in the shadows\"\n                          Aluigi (http://zenhax.com)\n  http://xentax.com\n                              Jon, TBA, and friends\n     npedotnet (NPESDK_GWT) licensed under MIT license\n                 riversun (bigdoc) licensed under MIT license\n  Sporst (JHexView, splib) licensed under GPL 2.0");
+        jTextArea2.setFocusable(false);
+        jScrollPane4.setViewportView(jTextArea2);
+
+        jLabel1.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        jLabel1.setText("farctool2!");
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/philosophofee/farctool2/resources/1002.gif"))); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel3.setText("written by Philosophofee");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout aboutWindowLayout = new javax.swing.GroupLayout(aboutWindow.getContentPane());
+        aboutWindow.getContentPane().setLayout(aboutWindowLayout);
+        aboutWindowLayout.setHorizontalGroup(
+            aboutWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 450, Short.MAX_VALUE)
+            .addGroup(aboutWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, aboutWindowLayout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        aboutWindowLayout.setVerticalGroup(
+            aboutWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 225, Short.MAX_VALUE)
+            .addGroup(aboutWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, aboutWindowLayout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -433,8 +517,17 @@ public class MainWindow extends javax.swing.JFrame {
         });
         ToolsMenu.add(ExportTextureButton);
 
+        PrintDependenciesButton.setText("Print dependencies...");
+        PrintDependenciesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PrintDependenciesButtonActionPerformed(evt);
+            }
+        });
+        ToolsMenu.add(PrintDependenciesButton);
+
         DecompressorMenuButton.setText("Decompressor...");
         DecompressorMenuButton.setToolTipText("Decompress a game data file to a raw, editable file.");
+        DecompressorMenuButton.setEnabled(false);
         DecompressorMenuButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DecompressorMenuButtonActionPerformed(evt);
@@ -444,17 +537,22 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem1.setText("Compressor...");
         jMenuItem1.setToolTipText("Compress a raw data file to a file loadable by the game.");
+        jMenuItem1.setEnabled(false);
         ToolsMenu.add(jMenuItem1);
 
-        PrintDependenciesButton.setText("Print dependencies...");
-        PrintDependenciesButton.addActionListener(new java.awt.event.ActionListener() {
+        jMenuBar1.add(ToolsMenu);
+
+        HelpMenu.setText("Help");
+
+        jMenuItem2.setText("About...");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PrintDependenciesButtonActionPerformed(evt);
+                jMenuItem2ActionPerformed(evt);
             }
         });
-        ToolsMenu.add(PrintDependenciesButton);
+        HelpMenu.add(jMenuItem2);
 
-        jMenuBar1.add(ToolsMenu);
+        jMenuBar1.add(HelpMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -707,6 +805,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_PrintDependenciesButtonActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        aboutWindow.show();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     private void showUserDialog(String title, String message) {
         if (title == "Warning") {
             PopUpMessage.showMessageDialog(PopUpMessage, message, title, PopUpMessage.WARNING_MESSAGE);
@@ -756,6 +858,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem ExportTextureButton;
     private javax.swing.JMenuItem ExtractMenuButton;
     private javax.swing.JMenu FileMenu;
+    private javax.swing.JMenu HelpMenu;
     private javax.swing.JScrollPane MapPanel;
     private javax.swing.JMenuItem Open;
     private javax.swing.JMenuItem OpenFarc;
@@ -770,16 +873,24 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu ToolsMenu;
     private javax.swing.JPanel ToolsPanel;
     private javax.swing.JPanel ToolsPanel2;
+    private javax.swing.JFrame aboutWindow;
     private javax.swing.JFileChooser fileChooser;
     private tv.porst.jhexview.JHexView hexViewer;
     private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JProgressBar mapLoadingBar;
     private javax.swing.JTree mapTree;
     private javax.swing.JPanel pnlOutput;
