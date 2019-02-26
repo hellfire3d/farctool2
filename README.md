@@ -4,30 +4,22 @@ farctool2 is a program I wrote for two reasons:
 1. To learn how Java can read and manipulate data streams, and
 2. Because I already knew the structures of the file formats this game used.
 
-### Disclaimer
 This program frankly isn't very good. It's messy and everything is disgustingly written. It was my first full-fledged Java application and that's very visible in how poor the code is and how much I stole. I've moved development over to OpenCWLib, which you can eventually use to create your own farctool3 -> https://github.com/philosophofee/OpenCWLib
 
 ### Why farctool "2"?
 farctool2 is the sequel to the original farctool, which was written in Game Maker 8.0.
 
 # Features
+ - It's basically a texture viewer, not much else.
  - Supports loading of .farc and .map files from every LBP game.
- - Supports texture viewing from every LBP game except LBP Vita. (Planned - for now use this: http://forum.xentax.com/viewtopic.php?p=139837&sid=f273e4c12cf5ce94f7f147626b117bd3#p139837)
  - Supports extraction of any compressed data file from LBP game.
  - Hex viewer (ft. Sporst)
  - Plaintext viewer for text-based files.
  - Supports dumping dependency list of LBP assets with reverse-lookup on GUIDs to filenames.
 
 # Planned
- - LBP Vita GXT texture viewing. 
- - Decompression and recompression of any file in the game.
- - Farc building.
- - Level editor.
- - Model viewer and exporter.
- - General Material (GMAT) viewer.
- - .plan generator (LBP1 ONLY) for music and costume pieces.
- - Model importer.
- 
+Nothing. Development has pushed over to OpenCWLib. https://github.com/philosophofee/OpenCWLib
+
 # Disclaimer
 I did not create any of the games in question nor am I affiliated with any of the developers of these video games.
 All researched data was acquired via means of downloading game package files through a public database of direct-to-PSN URLs with no protection.
