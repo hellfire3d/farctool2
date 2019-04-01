@@ -6,6 +6,8 @@ farctool2 is a program I wrote for two reasons:
 
 This program frankly isn't very good. It's messy and everything is disgustingly written. It was my first full-fledged Java application and that's very visible in how poor the code is and how much I stole. I've moved development over to OpenCWLib, which you can eventually use to create your own farctool3 -> https://github.com/philosophofee/OpenCWLib
 
+There's also this fork of farctool2 which someone is actively working on, which has mod support and several other features I never got around to implementing: https://github.com/ennuo/farctool2
+
 ### Why farctool "2"?
 farctool2 is the sequel to the original farctool, which was written in Game Maker 8.0.
 
