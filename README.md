@@ -4,7 +4,7 @@ farctool2 is a program I wrote for two reasons:
 1. To learn how Java can read and manipulate data streams, and
 2. Because I already knew the structures of the file formats this game used.
 
-This program frankly isn't very good. It's messy and everything is disgustingly written. It was my first full-fledged Java application and that's very visible in how poor the code is and how much I stole. I've moved development over to OpenCWLib, which you can eventually use to create your own farctool3 -> https://github.com/philosophofee/OpenCWLib
+This program frankly isn't very good. It's messy and everything is disgustingly written. It was my first full-fledged Java application and that's very visible in how poor the code is and how much I stole.
 
 There's also this fork of farctool2 which someone is actively working on, which has mod support and several other features I never got around to implementing: https://github.com/ennuo/farctool2
 
@@ -20,7 +20,7 @@ farctool2 is the sequel to the original farctool, which was written in Game Make
  - Supports dumping dependency list of LBP assets with reverse-lookup on GUIDs to filenames.
 
 # Planned
-Nothing. Development has pushed over to OpenCWLib. https://github.com/philosophofee/OpenCWLib
+Nothing.
 
 # Disclaimer
 I did not create any of the games in question nor am I affiliated with any of the developers of these video games.
@@ -32,7 +32,7 @@ The program was written by myself, with help from the following:
  - "The man in the shadows"
  - Aluigi (http://zenhax.com)
  - http://xentax.com
- - Jon, TBA, and friends
+ - The LBP community.
  - npedotnet (https://github.com/npedotnet/NPESDK_GWT) licensed under MIT license
  - riversun (https://github.com/riversun/bigdoc) licensed under MIT license
  - Sporst (https://github.com/sporst/JHexView, https://github.com/sporst/splib) licensed under GPL 2.0
