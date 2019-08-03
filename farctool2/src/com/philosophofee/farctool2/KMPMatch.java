@@ -25,10 +25,6 @@ public class KMPMatch {
         return -1;
     }
 
-    /**
-     * Computes the failure function using a boot-strapping process,
-     * where the pattern is matched against itself.
-     */
     private int[] computeFailure(byte[] pattern) {
         int[] failure = new int[pattern.length];
 

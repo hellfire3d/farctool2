@@ -12,6 +12,7 @@ public class CustomPrintStream extends PrintStream {
         super(out);
     }
 
+    
     @Override
     public void println(String string) {
         Date date = new Date();

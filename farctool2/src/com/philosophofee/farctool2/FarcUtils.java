@@ -19,6 +19,7 @@ public class FarcUtils {
             return null;
         }
 
+        
         //Grab file count
         int fileCount = 0;
         long tableOffset = 0;

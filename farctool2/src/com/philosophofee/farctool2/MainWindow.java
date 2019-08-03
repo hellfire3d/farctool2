@@ -10,8 +10,6 @@ import java.io.PrintStream;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.util.Date;
-import java.util.Formatter;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -211,9 +209,6 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jSplitPane1 = new javax.swing.JSplitPane();
         MapPanel = new javax.swing.JScrollPane();
         mapTree = new javax.swing.JTree();
@@ -242,6 +237,7 @@ public class MainWindow extends javax.swing.JFrame {
         ExtractMenuButton = new javax.swing.JMenuItem();
         ExportTextureButton = new javax.swing.JMenuItem();
         PrintDependenciesButton = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         DecompressorMenuButton = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         HelpMenu = new javax.swing.JMenu();
@@ -258,27 +254,18 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 300, Short.MAX_VALUE)
         );
 
-        aboutWindow.setTitle("farctool2 :)");
+        aboutWindow.setTitle("嫌な");
         aboutWindow.setAlwaysOnTop(true);
         aboutWindow.setMinimumSize(new java.awt.Dimension(450, 225));
-        aboutWindow.setPreferredSize(new java.awt.Dimension(450, 225));
         aboutWindow.setResizable(false);
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
-        jTextArea2.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
+        jTextArea2.setFont(new java.awt.Font("Microsoft YaHei", 0, 10)); // NOI18N
         jTextArea2.setRows(5);
-        jTextArea2.setText("Special thanks to:\n\n \"The man in the shadows\"\n                          Aluigi (http://zenhax.com)\n  http://xentax.com\n                              Jon, TBA, and friends\n     npedotnet (NPESDK_GWT) licensed under MIT license\n                 riversun (bigdoc) licensed under MIT license\n  Sporst (JHexView, splib) licensed under GPL 2.0");
+        jTextArea2.setText("thanks,  \n                 thanks\n                              thank you\n                                                                                           \n thanks,                thank you a lot\n\n           thank you,                                                       \n                                                                                          私は進化です。");
         jTextArea2.setFocusable(false);
         jScrollPane4.setViewportView(jTextArea2);
-
-        jLabel1.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
-        jLabel1.setText("farctool2!");
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/philosophofee/farctool2/resources/1002.gif"))); // NOI18N
-
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-        jLabel3.setText("written by Philosophofee");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -286,28 +273,15 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(45, 45, 45)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout aboutWindowLayout = new javax.swing.GroupLayout(aboutWindow.getContentPane());
@@ -525,9 +499,16 @@ public class MainWindow extends javax.swing.JFrame {
         });
         ToolsMenu.add(PrintDependenciesButton);
 
-        DecompressorMenuButton.setText("Decompressor...");
-        DecompressorMenuButton.setToolTipText("Decompress a game data file to a raw, editable file.");
-        DecompressorMenuButton.setEnabled(false);
+        jMenuItem3.setText("JOIN UPDATE MAP......");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        ToolsMenu.add(jMenuItem3);
+
+        DecompressorMenuButton.setText("MAP EDITOR................");
+        DecompressorMenuButton.setToolTipText("");
         DecompressorMenuButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DecompressorMenuButtonActionPerformed(evt);
@@ -535,9 +516,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         ToolsMenu.add(DecompressorMenuButton);
 
-        jMenuItem1.setText("Compressor...");
+        jMenuItem1.setText("N/A");
         jMenuItem1.setToolTipText("Compress a raw data file to a file loadable by the game.");
         jMenuItem1.setEnabled(false);
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         ToolsMenu.add(jMenuItem1);
 
         jMenuBar1.add(ToolsMenu);
@@ -618,6 +604,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_ExitActionPerformed
 
     private void DecompressorMenuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DecompressorMenuButtonActionPerformed
+        MapEditorGUI window = new MapEditorGUI();
+        window.setVisible(true);
+        return;
+        /*
         FileFilter ff = new FileFilter() {
             public boolean accept(File f) {
                 if (f.isDirectory()) {
@@ -657,7 +647,7 @@ public class MainWindow extends javax.swing.JFrame {
             //self.printHtml(System.out);
         } else {
             System.out.println("File access cancelled by user.");
-        }
+        }*/
     }//GEN-LAST:event_DecompressorMenuButtonActionPerformed
 
     private void OpenFarcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFarcActionPerformed
@@ -809,6 +799,62 @@ public class MainWindow extends javax.swing.JFrame {
         aboutWindow.show();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        showUserDialog("警告", "This option will allow you to join a LittleBigPlanet update\n.map file with the base game .map file. This is primarily\n to allow you to modify the game easier");
+        showUserDialog("私のプログラムは嫌です", "Select a base map file now");
+        FileFilter ff = new FileFilter() {
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                } else if (f.getName().endsWith(".map")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            public String getDescription() {
+                return "MAP File";
+            }
+        };
+        
+        File jisho;
+        File jisho2;
+        
+        
+        JFileChooser filePicka = new JFileChooser();
+        filePicka.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+        filePicka.setFileFilter(ff);
+        int returnVal = filePicka.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            jisho = filePicka.getSelectedFile();
+            System.out.println("Sucessfully opened " + jisho.getName());
+        } else { return; }
+        
+        showUserDialog("spaghetti code:)", "Select an update map file now");
+        
+        returnVal = filePicka.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            jisho2 = filePicka.getSelectedFile();
+            System.out.println("Sucessfully opened " + jisho2.getName());
+        } else { return; }
+        
+        showUserDialog("this program is disgusting", "I will join them now");
+        try {
+            //MapFile my = new MapFile();
+            //my.parse(jisho);
+            
+            //my.parse(jisho2);
+            
+            
+        } catch (Exception ex) {};
+        
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     private void showUserDialog(String title, String message) {
         if (title == "Warning") {
             PopUpMessage.showMessageDialog(PopUpMessage, message, title, PopUpMessage.WARNING_MESSAGE);
@@ -877,12 +923,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JFileChooser fileChooser;
     private tv.porst.jhexview.JHexView hexViewer;
     private javax.swing.JFrame jFrame1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

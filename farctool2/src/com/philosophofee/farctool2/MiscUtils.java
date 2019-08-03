@@ -18,7 +18,6 @@ import java.util.Formatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import net.npe.dds.DDSReader;
-import org.riversun.bigdoc.bin.BigFileSearcher;
 
 /**
  *

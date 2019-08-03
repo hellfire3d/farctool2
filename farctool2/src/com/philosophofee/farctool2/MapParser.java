@@ -65,23 +65,6 @@ public class MapParser {
                     mapAccess.skip(4);
                 }
                 
-                //LITERALLY THIS ENTIRE SECTION IS USELESS AS WE GET THE VALUES
-                //AT A LATER POINT IN TIME
-                //DATE, maybe fix later but unimportant now
-                //mapAccess.skip(4);
-                
-                //File size 4 bytes
-                //mapAccess.skip(4);
-                
-                //Hash 20 bytes
-                //byte[] SHA1Bytes = new byte[20]; 
-                //mapAccess.read(SHA1Bytes);
-                //SHA1 = MiscUtils.byteArrayToHexString(SHA1Bytes);
-                //mapAccess.skip(20);
-                
-                //GUID 4 bytes
-                //mapAccess.skip(4);
-                //GUID = mapAccess.readInt();
                 
                 mapAccess.skip(32);
                 buildTreeFromString(model, fileName);
